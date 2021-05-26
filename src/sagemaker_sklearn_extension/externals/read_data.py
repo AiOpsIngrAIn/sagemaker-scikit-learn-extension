@@ -17,7 +17,7 @@ from abc import ABC, abstractmethod
 from sys import getsizeof
 
 import mlio
-from mlio.integ.numpy import as_numpy
+# from mlio.integ.numpy import as_numpy
 import numpy as np
 import psutil
 
@@ -448,7 +448,8 @@ class ObjectBatchConsumer(AbstractBatchConsumer):
 
         # Estimate the size of items in each column using the first batch.
         for i in range(self._n_columns):
-            column = as_numpy(first_batch[i]).flatten()
+            #column = as_numpy(first_batch[i]).flatten()
+            column = np.array(first_batch[i]).flatten()
             self._row_nbytes += _get_size_total(column) / column.shape[0]
 
     def _concatenate_data(self):
@@ -470,7 +471,8 @@ class ObjectBatchConsumer(AbstractBatchConsumer):
         """Stacks numpy columns created from an incoming data batch into a numpy array."""
         return np.column_stack(
             [
-                as_numpy(batch[column_index]).flatten()
+                # as_numpy(batch[column_index]).flatten()
+                np.array(batch[column_index]).flatten()
                 for column_index in range(self._n_columns)
                 if column_index != self.target_column_index
             ]
@@ -478,7 +480,8 @@ class ObjectBatchConsumer(AbstractBatchConsumer):
 
     def _construct_target_array_data(self, batch):
         if self._split_target:
-            return as_numpy(batch[self.target_column_index]).flatten()
+            # return as_numpy(batch[self.target_column_index]).flatten()
+            return np.array(batch[self.target_column_index]).flatten()
         return None
 
     def _extend_features_batches(self, features_array_data):
@@ -566,12 +569,14 @@ class StringBatchConsumer(AbstractBatchConsumer):
         Note that the arrays are interpreted as strings here, in order to easily extract itemsize and estimate size.
         """
         return [
-            as_numpy(batch[i]).flatten().astype(str) for i in range(self._n_columns) if i != self.target_column_index
+            np.array(batch[i]).flatten().astype(str) for i in range(self._n_columns) if i != self.target_column_index
+            # as_numpy(batch[i]).flatten().astype(str) for i in range(self._n_columns) if i != self.target_column_index
         ]
 
     def _construct_target_array_data(self, batch):
         if self._split_target:
-            return as_numpy(batch[self.target_column_index]).flatten().astype(str)
+            return np.array(batch[self.target_column_index]).flatten().astype(str)
+            # return as_numpy(batch[self.target_column_index]).flatten().astype(str)
         return None
 
     def _extend_features_batches(self, features_array_data):
