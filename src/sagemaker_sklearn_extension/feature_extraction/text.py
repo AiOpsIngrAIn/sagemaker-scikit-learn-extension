@@ -15,7 +15,8 @@ import numpy as np
 import scipy.sparse as sp
 
 from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction.text import VectorizerMixin, TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import _VectorizerMixin as VectorizerMixin
 from sklearn.utils.validation import check_array, check_is_fitted
 
 
